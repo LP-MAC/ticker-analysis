@@ -33,6 +33,16 @@ try {
 // Use yahoo-finance2 as static object (v3 supports both patterns)
 const yahooFinance = yahooFinanceLib;
 
+console.log('=== yahoo-finance2 diagnostics ===');
+console.log('Type:', typeof yahooFinanceLib);
+console.log('Keys (first 10):', Object.keys(yahooFinanceLib).slice(0, 10));
+console.log('Has chart:', typeof yahooFinanceLib.chart);
+console.log('Has default:', typeof yahooFinanceLib.default);
+if (yahooFinanceLib.default) {
+  console.log('default keys:', Object.keys(yahooFinanceLib.default).slice(0, 10));
+}
+console.log('==================================');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
