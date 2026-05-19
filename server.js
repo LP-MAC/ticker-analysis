@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import yahooFinance from 'yahoo-finance2';
+import yahooFinanceLib from 'yahoo-finance2';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -30,6 +30,7 @@ try {
   ];
 }
 
+const yahooFinance = new yahooFinanceLib();
 const app = express();
 app.use(cors());
 app.use(express.json());
