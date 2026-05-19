@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import YahooFinance from 'yahoo-finance2';
+import * as YahooFinance from 'yahoo-finance2';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -30,7 +30,6 @@ try {
   ];
 }
 
-const yahooFinance = new YahooFinance({ suppressNotices: ['ripHistorical'] });
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -44,7 +43,7 @@ async function fetchHistorical(symbol) {
   const start = new Date();
   start.setFullYear(end.getFullYear() - 1);
   try {
-    const result = await yahooFinance.chart(symbol, {
+    const result = await YahooFinance.chart(symbol, {
       period1: start,
       period2: end,
       interval: '1d'
@@ -236,7 +235,7 @@ async function analyzeTicker(tickerObj) {
   let putCallOiRatio = null, putCallVolRatio = null;
 
   try {
-    const optionsData = await yahooFinance.options(symbol);
+    const optionsData = await YahooFinance.options(symbol);
     if (optionsData?.options?.length) {
       const chain = optionsData.options[0];
       const puts = chain.puts || [];
