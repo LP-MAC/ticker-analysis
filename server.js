@@ -33,12 +33,6 @@ try {
 // On Render, yahoo-finance2 requires new instance (no static methods)
 const yahooFinance = new yahooFinanceLib();
 
-console.log('=== yahoo-finance2 diagnostics ===');
-console.log('Instance type:', typeof yahooFinance);
-console.log('Instance has chart:', typeof yahooFinance.chart);
-console.log('Instance proto keys:', Object.getOwnPropertyNames(Object.getPrototypeOf(yahooFinance)).slice(0, 15));
-console.log('==================================');
-
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -52,13 +46,11 @@ async function fetchHistorical(symbol) {
   const start = new Date();
   start.setFullYear(end.getFullYear() - 1);
   try {
-    console.log(`[${symbol}] Fetching chart data...`);
     const result = await yahooFinance.chart(symbol, {
       period1: start,
       period2: end,
       interval: '1d'
     });
-    console.log(`[${symbol}] Got result. Keys: ${Object.keys(result || {}).join(',')}, quotes length: ${result?.quotes?.length}`);
     if (result && result.quotes) {
       return result.quotes.map(q => ({
         date: new Date(q.date),
@@ -71,8 +63,7 @@ async function fetchHistorical(symbol) {
     }
     return null;
   } catch (err) {
-    console.error(`[${symbol}] Historical error:`, err.message);
-    console.error(`[${symbol}] Stack:`, err.stack?.split('\n').slice(0, 3).join(' | '));
+    console.error(`Historical error for ${symbol}:`, err.message);
     return null;
   }
 }
@@ -414,6 +405,55 @@ app.get('/api/ticker/:symbol', async (req, res) => {
     const result = await analyzeTicker(tickerObj);
     res.json(result);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Fetch historical data with a custom interval (e.g. 60m, 1d, 1wk)
+app.get('/api/history/:symbol', async (req, res) => {
+  try {
+    const symbol = req.params.symbol;
+    const interval = req.query.interval || '1d';
+
+    // Validate interval against what Yahoo supports
+    const validIntervals = ['1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1d', '5d', '1wk', '1mo', '3mo'];
+    if (!validIntervals.includes(interval)) {
+      return res.status(400).json({ error: `Invalid interval. Use one of: ${validIntervals.join(', ')}` });
+    }
+
+    // Choose lookback window based on interval (Yahoo enforces limits)
+    const end = new Date();
+    const start = new Date();
+    if (['1m', '2m', '5m', '15m', '30m'].includes(interval)) {
+      start.setDate(end.getDate() - 7); // ~1 week for short intervals
+    } else if (['60m', '90m', '1h'].includes(interval)) {
+      start.setDate(end.getDate() - 60); // ~60 days for hourly
+    } else if (['1d', '5d'].includes(interval)) {
+      start.setFullYear(end.getFullYear() - 1);
+    } else {
+      start.setFullYear(end.getFullYear() - 5);
+    }
+
+    const result = await yahooFinance.chart(symbol, {
+      period1: start,
+      period2: end,
+      interval
+    });
+
+    if (result && result.quotes) {
+      const data = result.quotes.map(q => ({
+        date: new Date(q.date),
+        open: q.open,
+        high: q.high,
+        low: q.low,
+        close: q.close,
+        volume: q.volume
+      })).filter(d => d.open != null && d.close != null);
+      return res.json(data);
+    }
+    res.json([]);
+  } catch (err) {
+    console.error(`History error for ${req.params.symbol}:`, err.message);
     res.status(500).json({ error: err.message });
   }
 });
