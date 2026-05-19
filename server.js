@@ -30,17 +30,13 @@ try {
   ];
 }
 
-// Use yahoo-finance2 as static object (v3 supports both patterns)
-const yahooFinance = yahooFinanceLib;
+// On Render, yahoo-finance2 requires new instance (no static methods)
+const yahooFinance = new yahooFinanceLib();
 
 console.log('=== yahoo-finance2 diagnostics ===');
-console.log('Type:', typeof yahooFinanceLib);
-console.log('Keys (first 10):', Object.keys(yahooFinanceLib).slice(0, 10));
-console.log('Has chart:', typeof yahooFinanceLib.chart);
-console.log('Has default:', typeof yahooFinanceLib.default);
-if (yahooFinanceLib.default) {
-  console.log('default keys:', Object.keys(yahooFinanceLib.default).slice(0, 10));
-}
+console.log('Instance type:', typeof yahooFinance);
+console.log('Instance has chart:', typeof yahooFinance.chart);
+console.log('Instance proto keys:', Object.getOwnPropertyNames(Object.getPrototypeOf(yahooFinance)).slice(0, 15));
 console.log('==================================');
 
 const app = express();
