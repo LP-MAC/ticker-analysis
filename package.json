@@ -1,13 +1,28 @@
 {
-  "name": "csp-backend",
-  "version": "1.0.0",
   "type": "module",
+  "name": "ticker-analysis-backend",
+  "version": "1.0.0",
+  "description": "Financial ticker analysis with technical indicators, market regime detection, and put options strategy recommendations",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js"
   },
+  "keywords": [
+    "finance",
+    "options",
+    "technical-analysis",
+    "market-regime",
+    "volatility"
+  ],
+  "author": "Your Name",
+  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "yahoo-finance2": "^3.14.0"
+    "express": "^4.19.2",
+    "yahoo-finance2": "^2.11.0"
+  },
+  "engines": {
+    "node": "18.x || 20.x"
   }
 }
