@@ -42,9 +42,6 @@ const yahooFinance = new yahooFinanceLib({
   }
 });
 
-// Suppress historical deprecation notice and survey prompt
-yahooFinance.suppressNotices(['ripHistorical', 'yahooSurvey']);
-
 const app = express();
 app.use(cors());
 app.use(express.json());
