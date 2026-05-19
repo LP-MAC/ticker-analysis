@@ -55,11 +55,13 @@ async function fetchHistorical(symbol) {
   const start = new Date();
   start.setFullYear(end.getFullYear() - 1);
   try {
+    console.log(`[${symbol}] Fetching chart data...`);
     const result = await yahooFinance.chart(symbol, {
       period1: start,
       period2: end,
       interval: '1d'
     });
+    console.log(`[${symbol}] Got result. Keys: ${Object.keys(result || {}).join(',')}, quotes length: ${result?.quotes?.length}`);
     if (result && result.quotes) {
       return result.quotes.map(q => ({
         date: new Date(q.date),
@@ -72,7 +74,8 @@ async function fetchHistorical(symbol) {
     }
     return null;
   } catch (err) {
-    console.error(`Historical error for ${symbol}:`, err.message);
+    console.error(`[${symbol}] Historical error:`, err.message);
+    console.error(`[${symbol}] Stack:`, err.stack?.split('\n').slice(0, 3).join(' | '));
     return null;
   }
 }
