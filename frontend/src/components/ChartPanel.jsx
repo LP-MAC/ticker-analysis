@@ -82,6 +82,7 @@ export default function ChartPanel({ ticker }) {
       grid: { vertLines: { color: '#f0f0f0' }, horzLines: { color: '#f0f0f0' } },
       timeScale: { timeVisible: true, secondsVisible: false }
     });
+
     const candlestickSeries = chart.addCandlestickSeries();
     const candleData = historicalData.map(d => ({
       time: Math.floor(new Date(d.date).getTime() / 1000),
@@ -129,6 +130,7 @@ export default function ChartPanel({ ticker }) {
     }
 
     chartRef.current = chart;
+
     const handleResize = () => {
       if (chartRef.current && chartContainerRef.current) {
         chartRef.current.applyOptions({
@@ -145,12 +147,12 @@ export default function ChartPanel({ ticker }) {
 
   return (
     <div className="flex-1 flex flex-col p-3 md:p-4 overflow-y-auto">
-      <div className="mb-3 md:mb-4">
+
+      {/* Ticker header */}
+      <div className="mb-2">
         <h2 className="text-xl md:text-2xl font-bold">{ticker.ticker}</h2>
-        <div className="text-sm md:text-base text-gray-600 break-words">
-          {ticker.description}
-        </div>
-        <div className="text-sm md:text-base text-gray-600 mt-1">
+        <div className="text-sm text-gray-600 break-words">{ticker.description}</div>
+        <div className="text-sm text-gray-600 mt-1">
           <span className="font-mono">${ticker.price}</span>
           <span className="mx-2">•</span>
           <span>{ticker.regime}</span>
@@ -159,8 +161,10 @@ export default function ChartPanel({ ticker }) {
         </div>
       </div>
 
-      {/* Chart controls — wrap on mobile */}
+      {/* Chart controls */}
       <div className="flex flex-wrap items-center gap-3 mb-2">
+
+        {/* Timeframe toggle */}
         <div className="inline-flex rounded border border-gray-300 overflow-hidden">
           {TIMEFRAMES.map(tf => (
             <button
@@ -179,6 +183,7 @@ export default function ChartPanel({ ticker }) {
           ))}
         </div>
 
+        {/* Bollinger Bands checkbox */}
         <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none py-1">
           <input
             type="checkbox"
@@ -187,7 +192,9 @@ export default function ChartPanel({ ticker }) {
             className="accent-blue-500 w-4 h-4"
           />
           Bollinger Bands
+        </label>
 
+        {/* Panel mode toggle */}
         <div className="inline-flex rounded border border-gray-300 overflow-hidden">
           <button
             onClick={() => setPanelMode('metrics')}
@@ -213,14 +220,16 @@ export default function ChartPanel({ ticker }) {
           </button>
         </div>
 
-        </label>
-
         {loadingTf && <span className="text-sm text-gray-500">Loading {timeframe}...</span>}
       </div>
 
+      {/* Chart */}
       <div ref={chartContainerRef} style={{ width: '100%', minHeight: '400px', flex: '1 1 auto' }} />
+
+      {/* Bottom panel - toggled */}
       {panelMode === 'metrics' && <IndicatorsTable ticker={ticker} />}
       {panelMode === 'csp' && <CSPRecommendation ticker={ticker} />}
+
     </div>
   );
 }
