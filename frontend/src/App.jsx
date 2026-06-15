@@ -115,8 +115,8 @@ function App() {
         <TickerList tickers={tickers} selected={selected} onSelect={handleSelect} />
       </div>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      {/* Main content: Chart-first layout */}
+      <div className="flex-1 flex flex-col min-w-0">
 
         {/* Mobile top bar */}
         <div className="md:hidden flex items-center gap-3 p-2 border-b bg-white sticky top-0 z-10">
@@ -131,75 +131,70 @@ function App() {
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <span className="font-bold">{selected?.ticker ?? 'Select ticker'}</span>
+          <span className="font-bold text-sm">{selected?.ticker ?? 'Select ticker'}</span>
         </div>
 
-        {/* Chart */}
-        <ChartPanel ticker={selected} />
+        {/* Chart takes up 60% of space */}
+        <div className="flex-shrink-0 h-[40vh] md:h-[55vh] border-b overflow-hidden">
+          <ChartPanel ticker={selected} />
+        </div>
 
-        {/* Support / Resistance callout */}
-        {selected && (
-          <div className="mx-3 md:mx-4 mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Callout cards + Analysis section - scrollable */}
+        <div className="flex-1 overflow-y-auto">
 
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center gap-1.5 mb-1">
-                <span className="text-green-700 font-semibold text-sm">Support Strike</span>
-                <span
-                  className="text-green-500 cursor-help text-xs"
-                  title="Highest put OI below current price. Acts as a psychological floor. Sell your CSP at or just below this strike for higher probability."
-                >
-                  ⓘ
-                </span>
-              </div>
-              <div className="font-mono text-lg font-bold text-green-800">
-                {selected.support_strike ? `$${selected.support_strike.toFixed(2)}` : '—'}
-              </div>
-              <div className="text-xs text-green-600 mt-0.5">
-                Highest put OI below current price. Acts as a psychological floor.
-              </div>
-              <div className="text-xs text-green-700 mt-1 font-medium">
-                💡 Sell your CSP at or just below this strike for higher probability.
-              </div>
-              {selected.support_bid && (
-                <div className="text-xs text-green-600 mt-1 font-mono">
-                  Bid / Ask: {selected.support_bid.toFixed(2)} / {selected.support_ask.toFixed(2)}
+          {/* Support / Resistance callouts - compact horizontal */}
+          {selected && (
+            <div className="px-3 md:px-4 pt-2 pb-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+
+              <div className="p-2 bg-green-50 border border-green-200 rounded text-sm">
+                <div className="flex items-center gap-1 mb-0.5">
+                  <span className="text-green-700 font-semibold text-xs">Support</span>
+                  <span
+                    className="text-green-500 cursor-help text-xs"
+                    title="Highest put OI below current price. Acts as a psychological floor. Sell your CSP at or just below this strike for higher probability."
+                  >
+                    ⓘ
+                  </span>
                 </div>
-              )}
-            </div>
-
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-              <div className="flex items-center gap-1.5 mb-1">
-                <span className="text-red-700 font-semibold text-sm">Resistance Strike</span>
-                <span
-                  className="text-red-400 cursor-help text-xs"
-                  title="Highest call OI above current price. Acts as a psychological ceiling. Tells you where upside may be capped."
-                >
-                  ⓘ
-                </span>
-              </div>
-              <div className="font-mono text-lg font-bold text-red-800">
-                {selected.resistance_strike ? `$${selected.resistance_strike.toFixed(2)}` : '—'}
-              </div>
-              <div className="text-xs text-red-600 mt-0.5">
-                Highest call OI above current price. Acts as a psychological ceiling.
-              </div>
-              <div className="text-xs text-red-700 mt-1 font-medium">
-                Tells you where upside may be capped.
-              </div>
-              {selected.resistance_bid && (
-                <div className="text-xs text-red-600 mt-1 font-mono">
-                  Bid / Ask: {selected.resistance_bid.toFixed(2)} / {selected.resistance_ask.toFixed(2)}
+                <div className="font-mono text-sm font-bold text-green-800">
+                  {selected.support_strike ? `$${selected.support_strike.toFixed(2)}` : '—'}
                 </div>
-              )}
-            </div>
+                {selected.support_bid && (
+                  <div className="text-xs text-green-600 mt-0.5 font-mono">
+                    B/A: {selected.support_bid.toFixed(2)} / {selected.support_ask.toFixed(2)}
+                  </div>
+                )}
+              </div>
 
+              <div className="p-2 bg-red-50 border border-red-200 rounded text-sm">
+                <div className="flex items-center gap-1 mb-0.5">
+                  <span className="text-red-700 font-semibold text-xs">Resistance</span>
+                  <span
+                    className="text-red-400 cursor-help text-xs"
+                    title="Highest call OI above current price. Acts as a psychological ceiling. Tells you where upside may be capped."
+                  >
+                    ⓘ
+                  </span>
+                </div>
+                <div className="font-mono text-sm font-bold text-red-800">
+                  {selected.resistance_strike ? `$${selected.resistance_strike.toFixed(2)}` : '—'}
+                </div>
+                {selected.resistance_bid && (
+                  <div className="text-xs text-red-600 mt-0.5 font-mono">
+                    B/A: {selected.resistance_bid.toFixed(2)} / {selected.resistance_ask.toFixed(2)}
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+
+          {/* Indicators + CSP - below callouts */}
+          <div className="px-3 md:px-4 pb-6">
+            <IndicatorsTable ticker={selected} />
+            <CSPRecommendation ticker={selected} />
           </div>
-        )}
 
-        {/* Indicators + CSP */}
-        <div className="px-3 md:px-4 pb-6">
-          <IndicatorsTable ticker={selected} />
-          <CSPRecommendation ticker={selected} />
         </div>
 
       </div>
