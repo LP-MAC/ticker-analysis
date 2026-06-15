@@ -1,5 +1,6 @@
 [
   { "symbol": "GLD", "description": "Gold ETF" },
+  { "symbol": "GDX", "description": "GOLD MINERS" },
   { "symbol": "SLV", "description": "Silver ETF" },
   { "symbol": "SILJ", "description": "Junior Silver Miners ETF" },
   { "symbol": "SPY", "description": "S&P 500 ETF" },
@@ -11,5 +12,10 @@
   { "symbol": "MSFT", "description": "Microsoft Corp." },
   { "symbol": "QCOM", "description": "Qualcomm Inc." },
   { "symbol": "INTC", "description": "Intel Corp." },
+  { "symbol": "SOI", "description": "OIL" },
+  { "symbol": "CVX", "description": "Chevron" },
+  { "symbol": "BKCH", "description": "Global X Blockchain" },
+  { "symbol": "COPX", "description": "Copper Miners" },
+  { "symbol": "URA", "description": "Uranium Miners" },
   { "symbol": "IGV", "description": "Software ETF." }
 ]
