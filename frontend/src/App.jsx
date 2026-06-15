@@ -134,8 +134,8 @@ function App() {
           <span className="font-bold text-sm">{selected?.ticker ?? 'Select ticker'}</span>
         </div>
 
-        {/* Chart takes up 60% of space */}
-        <div className="flex-shrink-0 h-[40vh] md:h-[55vh] border-b overflow-hidden">
+        {/* Chart takes up majority of space with room for X-axis */}
+        <div className="flex-shrink-0 h-[50vh] md:h-[65vh] border-b overflow-hidden pb-2">
           <ChartPanel ticker={selected} />
         </div>
 
