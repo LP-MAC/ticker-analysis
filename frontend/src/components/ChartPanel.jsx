@@ -191,7 +191,7 @@ export default function ChartPanel({ ticker }) {
         {loadingTf && <span className="text-sm text-gray-500">Loading {timeframe}...</span>}
       </div>
 
-      <div ref={chartContainerRef} style={{ width: '100%' }} />
+      <div ref={chartContainerRef} style={{ width: '100%', height: '100%' }} className="flex-1" />
       <IndicatorsTable ticker={ticker} />
       <CSPRecommendation ticker={ticker} />
     </div>
