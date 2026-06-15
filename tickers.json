@@ -1,0 +1,9 @@
+[
+  { "symbol": "GLD", "description": "Gold ETF - SPDR Gold Shares" },
+  { "symbol": "SLV", "description": "Silver ETF - iShares Silver Trust" },
+  { "symbol": "SILJ", "description": "Junior Silver Miners ETF" },
+  { "symbol": "SPY", "description": "S&P 500 ETF - SPDR" },
+  { "symbol": "QQQ", "description": "Nasdaq 100 ETF - Invesco" },
+  { "symbol": "IWM", "description": "Russell 2000 ETF - iShares" },
+  { "symbol": "TLT", "description": "Long-Term Treasury ETF - iShares 20+ Year" }
+]
