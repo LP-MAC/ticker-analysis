@@ -33,6 +33,7 @@ export default function ChartPanel({ ticker }) {
   const [timeframe, setTimeframe] = useState('1D');
   const [historicalData, setHistoricalData] = useState(null);
   const [loadingTf, setLoadingTf] = useState(false);
+  const [panelMode, setPanelMode] = useState('metrics'); // 'metrics' or 'csp'
 
   useEffect(() => {
     if (ticker?.historical) {
@@ -186,14 +187,40 @@ export default function ChartPanel({ ticker }) {
             className="accent-blue-500 w-4 h-4"
           />
           Bollinger Bands
+
+        <div className="inline-flex rounded border border-gray-300 overflow-hidden">
+          <button
+            onClick={() => setPanelMode('metrics')}
+            className={
+              'px-4 py-2 text-sm transition-colors ' +
+              (panelMode === 'metrics'
+                ? 'bg-blue-500 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-100 active:bg-gray-200')
+            }
+          >
+            📊 Metrics
+          </button>
+          <button
+            onClick={() => setPanelMode('csp')}
+            className={
+              'px-4 py-2 text-sm transition-colors ' +
+              (panelMode === 'csp'
+                ? 'bg-blue-500 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-100 active:bg-gray-200')
+            }
+          >
+            📈 CSP
+          </button>
+        </div>
+
         </label>
 
         {loadingTf && <span className="text-sm text-gray-500">Loading {timeframe}...</span>}
       </div>
 
-      <div ref={chartContainerRef} style={{ width: '100%', height: '100%' }} className="flex-1" />
-      <IndicatorsTable ticker={ticker} />
-      <CSPRecommendation ticker={ticker} />
+      <div ref={chartContainerRef} style={{ width: '100%', minHeight: '400px', flex: '1 1 auto' }} />
+      {panelMode === 'metrics' && <IndicatorsTable ticker={ticker} />}
+      {panelMode === 'csp' && <CSPRecommendation ticker={ticker} />}
     </div>
   );
 }
