@@ -1,0 +1,15 @@
+[
+  { "symbol": "GLD", "description": "Gold ETF" },
+  { "symbol": "SLV", "description": "Silver ETF" },
+  { "symbol": "SILJ", "description": "Junior Silver Miners ETF" },
+  { "symbol": "SPY", "description": "S&P 500 ETF" },
+  { "symbol": "QQQ", "description": "Nasdaq 100 ETF" },
+  { "symbol": "IWM", "description": "Russell 2000 ETF" },
+  { "symbol": "TLT", "description": "Long-Term Treasury ETF" },
+  { "symbol": "AAPL", "description": "Apple Inc." },
+  { "symbol": "TSLA", "description": "Tesla Inc." },
+  { "symbol": "MSFT", "description": "Microsoft Corp." },
+  { "symbol": "QCOM", "description": "Qualcomm Inc." },
+  { "symbol": "INTC", "description": "Intel Corp." },
+  { "symbol": "IGV", "description": "Software ETF." }
+]
