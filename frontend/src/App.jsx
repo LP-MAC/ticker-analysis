@@ -4,6 +4,83 @@ import ChartPanel from './components/ChartPanel';
 import IndicatorsTable from './components/IndicatorsTable';
 import CSPRecommendation from './components/CSPRecommendation';
 
+function StrikesPanel({ ticker }) {
+  if (!ticker) return null;
+  const fmt = (v, d = 2) => (v != null ? Number(v).toFixed(d) : '—');
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2">
+      {/* Support */}
+      <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className="text-green-700 font-bold text-sm">🟢 Support Strike</span>
+          <span className="text-green-500 cursor-help text-xs" title="Highest put OI below current price. Acts as a psychological floor.">ⓘ</span>
+        </div>
+        <div className="font-mono text-2xl font-bold text-green-800 mb-1">
+          {ticker.support_strike ? `$${fmt(ticker.support_strike)}` : '—'}
+        </div>
+        <div className="text-xs text-green-700 mb-2">
+          Highest put OI below current price — acts as a psychological floor.
+        </div>
+        <div className="text-xs font-medium text-green-800 mb-2">
+          💡 Sell your CSP at or just below this strike for higher probability.
+        </div>
+        {ticker.support_bid != null && (
+          <div className="text-xs font-mono text-green-600">
+            Bid / Ask: {fmt(ticker.support_bid)} / {fmt(ticker.support_ask)}
+            <span className="ml-2 text-green-700 font-medium">
+              Mid: {fmt((ticker.support_bid + ticker.support_ask) / 2)}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Resistance */}
+      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className="text-red-700 font-bold text-sm">🔴 Resistance Strike</span>
+          <span className="text-red-400 cursor-help text-xs" title="Highest call OI above current price. Acts as a psychological ceiling.">ⓘ</span>
+        </div>
+        <div className="font-mono text-2xl font-bold text-red-800 mb-1">
+          {ticker.resistance_strike ? `$${fmt(ticker.resistance_strike)}` : '—'}
+        </div>
+        <div className="text-xs text-red-700 mb-2">
+          Highest call OI above current price — acts as a psychological ceiling.
+        </div>
+        <div className="text-xs font-medium text-red-800 mb-2">
+          ⚠️ Upside may be capped near this level.
+        </div>
+        {ticker.resistance_bid != null && (
+          <div className="text-xs font-mono text-red-600">
+            Bid / Ask: {fmt(ticker.resistance_bid)} / {fmt(ticker.resistance_ask)}
+            <span className="ml-2 text-red-700 font-medium">
+              Mid: {fmt((ticker.resistance_bid + ticker.resistance_ask) / 2)}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Range summary */}
+      {ticker.support_strike && ticker.resistance_strike && (
+        <div className="sm:col-span-2 p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+          <span className="font-semibold text-gray-700">OI Range: </span>
+          <span className="font-mono">${fmt(ticker.support_strike)}</span>
+          <span className="mx-2 text-gray-400">→</span>
+          <span className="font-mono">${fmt(ticker.resistance_strike)}</span>
+          <span className="mx-3 text-gray-400">|</span>
+          <span className="font-semibold text-gray-700">Width: </span>
+          <span className="font-mono">${fmt(ticker.resistance_strike - ticker.support_strike)}</span>
+          <span className="mx-3 text-gray-400">|</span>
+          <span className="font-semibold text-gray-700">Current: </span>
+          <span className="font-mono">${fmt(ticker.price)}</span>
+          <span className="mx-2 text-gray-400">
+            ({fmt(((ticker.price - ticker.support_strike) / (ticker.resistance_strike - ticker.support_strike)) * 100, 0)}% of range)
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function App() {
   const [tickers, setTickers] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -51,7 +128,6 @@ function App() {
   return (
     <div className="flex h-screen overflow-hidden bg-white">
 
-      {/* Mobile backdrop */}
       {drawerOpen && (
         <div className="md:hidden fixed inset-0 bg-black/40 z-20" onClick={() => setDrawerOpen(false)} />
       )}
@@ -81,7 +157,7 @@ function App() {
         <TickerList tickers={tickers} selected={selected} onSelect={handleSelect} />
       </div>
 
-      {/* Main: 3-row layout — header | chart | panel */}
+      {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
         {/* Mobile top bar */}
@@ -94,7 +170,7 @@ function App() {
           <span className="font-bold text-sm">{selected?.ticker ?? 'Select ticker'}</span>
         </div>
 
-        {/* Chart area — fixed height */}
+        {/* Chart — fixed height */}
         <div className="shrink-0 h-[55vh] border-b">
           <ChartPanel ticker={selected} panelMode={panelMode} setPanelMode={setPanelMode} />
         </div>
@@ -102,7 +178,8 @@ function App() {
         {/* Bottom panel — scrollable */}
         <div className="flex-1 overflow-y-auto px-3 md:px-4 py-3">
           {panelMode === 'metrics' && <IndicatorsTable ticker={selected} />}
-          {panelMode === 'csp' && <CSPRecommendation ticker={selected} />}
+          {panelMode === 'csp'     && <CSPRecommendation ticker={selected} />}
+          {panelMode === 'strikes' && <StrikesPanel ticker={selected} />}
         </div>
 
       </div>

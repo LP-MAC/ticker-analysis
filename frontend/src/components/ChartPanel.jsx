@@ -19,6 +19,12 @@ const TIMEFRAMES = [
   { key: '1D', label: '1D', interval: '1d' },
 ];
 
+const PANELS = [
+  { key: 'metrics', label: '📊 Metrics' },
+  { key: 'csp',     label: '📈 CSP' },
+  { key: 'strikes', label: '🎯 Strikes' },
+];
+
 export default function ChartPanel({ ticker, panelMode, setPanelMode }) {
   const chartContainerRef = useRef(null);
   const chartRef = useRef(null);
@@ -120,6 +126,7 @@ export default function ChartPanel({ ticker, panelMode, setPanelMode }) {
       </div>
 
       <div className="flex flex-wrap items-center gap-2 px-3 pb-2">
+        {/* Timeframe */}
         <div className="inline-flex rounded border border-gray-300 overflow-hidden">
           {TIMEFRAMES.map(tf => (
             <button key={tf.key} onClick={() => handleTimeframeChange(tf.key)} disabled={loadingTf}
@@ -129,20 +136,20 @@ export default function ChartPanel({ ticker, panelMode, setPanelMode }) {
           ))}
         </div>
 
+        {/* BB checkbox */}
         <label className="flex items-center gap-1.5 text-sm text-gray-700 cursor-pointer select-none">
           <input type="checkbox" checked={showBB} onChange={(e) => setShowBB(e.target.checked)} className="accent-blue-500 w-4 h-4" />
           BB
         </label>
 
+        {/* Panel toggle */}
         <div className="inline-flex rounded border border-gray-300 overflow-hidden">
-          <button onClick={() => setPanelMode('metrics')}
-            className={'px-3 py-1.5 text-sm transition-colors ' + (panelMode === 'metrics' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100')}>
-            📊 Metrics
-          </button>
-          <button onClick={() => setPanelMode('csp')}
-            className={'px-3 py-1.5 text-sm transition-colors ' + (panelMode === 'csp' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100')}>
-            📈 CSP
-          </button>
+          {PANELS.map(p => (
+            <button key={p.key} onClick={() => setPanelMode(p.key)}
+              className={'px-3 py-1.5 text-sm transition-colors ' + (panelMode === p.key ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100')}>
+              {p.label}
+            </button>
+          ))}
         </div>
 
         {loadingTf && <span className="text-xs text-gray-400">Loading…</span>}
